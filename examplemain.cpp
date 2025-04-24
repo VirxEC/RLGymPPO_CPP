@@ -127,7 +127,7 @@ int rlbotmain()
 		return EXIT_FAILURE;
 	}
 
-	return 1;
+	return 0;
 }
 
 int main() {
