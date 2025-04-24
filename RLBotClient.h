@@ -1,15 +1,12 @@
 #pragma once
 
-#include <rlbot/bot.h>
+#include <rlbot/Bot.h>
 #include <RLGymSim_CPP/Utils/OBSBuilders/OBSBuilder.h>
 #include <RLGymSim_CPP/Utils/ActionParsers/ActionParser.h>
 
 #include <RLGymPPO_CPP/Util/InferUnit.h>
 
 struct RLBotParams {
-	// Set this to the same port used in rlbot/port.cfg
-	int port;
-
 	RLGSC::OBSBuilder* obsBuilder = NULL; // Use your OBS builder
 	RLGSC::ActionParser* actionParser = NULL; // Use your action parser
 
@@ -38,12 +35,20 @@ public:
 	float prevTime = 0;
 	int ticks = -1;
 
-	RLBotBot(int _index, int _team, std::string _name, const RLBotParams& params);
-	~RLBotBot();
+	RLBotBot () noexcept = delete;
 
-	rlbot::Controller GetOutput(rlbot::GameTickPacket gameTickPacket) override;
+	~RLBotBot () noexcept override;
+
+	RLBotBot (std::unordered_set<unsigned> indices_, unsigned team_, std::string name_) noexcept;
+
+	RLBotBot (RLBotBot const &) noexcept = delete;
+
+	RLBotBot (RLBotBot &&) noexcept = delete;
+
+	RLBotBot &operator= (RLBotBot const &) noexcept = delete;
+
+	RLBotBot &operator= (RLBotBot &&) noexcept = delete;
+
+	void update (rlbot::flat::GamePacket const *packet_,
+	    rlbot::flat::BallPrediction const *ballPrediction_) noexcept override;
 };
-
-namespace RLBotClient {
-	void Run(const RLBotParams& params);
-}

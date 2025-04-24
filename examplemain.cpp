@@ -10,6 +10,8 @@
 
 #include "RLBotClient.h"
 
+#include <rlbot/BotManager.h>
+
 using namespace RLGPC; // RLGymPPO
 using namespace RLGSC; // RLGymSim
 
@@ -99,6 +101,35 @@ EnvCreateResult EnvCreateFunc() {
 	return { match, gym };
 }
 
+int rlbotmain()
+{
+	auto const serverHost = [] () -> char const * {
+		auto const env = std::getenv ("RLBOT_SERVER_IP");
+		if (env)
+			return env;
+		return "127.0.0.1";
+	}();
+
+	auto const serverPort = [] () -> char const * {
+		auto const env = std::getenv ("RLBOT_SERVER_PORT");
+		if (env)
+			return env;
+		return "23234";
+	}();
+
+	// hardcode a default agentId here
+	// if this is changed, be sure to update `agent_id` in config/bot.toml
+	auto const agentId = "rlbot_community/rlgym_ppo_cpp";
+
+	rlbot::BotManager<RLBotBot> manager{false};
+	if (!manager.run (serverHost, serverPort, agentId, false))
+	{
+		return EXIT_FAILURE;
+	}
+
+	return 1;
+}
+
 int main() {
 	// Initialize RocketSim with collision meshes
 	RocketSim::Init("./collision_meshes");
@@ -143,6 +174,9 @@ int main() {
 	// Set up our callbacks
 	learner.stepCallback = OnStep;
 	learner.iterationCallback = OnIteration;
+
+	// Uncomment to run in RLBot v5
+	// return rlbotmain();
 
 	// Start learning!
 	learner.Learn();
