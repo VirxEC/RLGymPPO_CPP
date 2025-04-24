@@ -134,9 +134,9 @@ void RLBotBot::update (rlbot::flat::GamePacket const *packet,
 			controls.pitch,
 			controls.yaw,
 			controls.roll,
-			controls.jump,
-			controls.boost,
-			controls.handbrake,
+			bool(controls.jump),
+			bool(controls.boost),
+			bool(controls.handbrake),
 			false, // use_item
 		});
 	}
