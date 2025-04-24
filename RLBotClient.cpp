@@ -50,7 +50,7 @@ PlayerData ToPlayer(const rlbot::flat::PlayerInfo* playerInfo) {
 	pd.carState.isOnGround = playerInfo->air_state() == rlbot::flat::AirState::OnGround;
 	pd.carState.hasJumped = playerInfo->has_jumped();
 	pd.carState.hasDoubleJumped = playerInfo->has_double_jumped();
-	pd.carState.isDemoed = playerInfo->demolished_timeout() < 0;
+	pd.carState.isDemoed = playerInfo->demolished_timeout() >= 0;
 	pd.hasFlip = !playerInfo->has_dodged() && !playerInfo->has_double_jumped();
 
 	return pd;
